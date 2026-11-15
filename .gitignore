@@ -1,0 +1,11 @@
+# Cache e importações geradas pela Godot
+.godot/
+# Builds exportados
+/build/
+/export/
+*.tmp
+# Gabarito do professor (gerado por tools/gen_docs.gd)
+documentation/SOLUCOES_PROFESSOR.md
+# Chave de assinatura Android: nunca enviar
+*.jks
+*.keystore

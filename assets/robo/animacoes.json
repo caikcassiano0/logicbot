@@ -1,0 +1,156 @@
+{
+	"guarda": {
+		"len": 2.2
+	},
+	"guarda_parada": {
+		"len": 2.2
+	},
+	"jab": {
+		"len": 1.73333333333333,
+		"mao": "LeftHand",
+		"impacto": 0.433333333333333,
+		"fim": 1.21666666666667,
+		"alcance": 0.84890311376916
+	},
+	"direto": {
+		"len": 2.13333333333333,
+		"mao": "RightHand",
+		"impacto": 0.666666666666667,
+		"fim": 1.38333333333333,
+		"alcance": 0.870787021186617
+	},
+	"cruzado_frente": {
+		"len": 2.0,
+		"mao": "LeftHand",
+		"impacto": 0.5,
+		"fim": 1.63333333333333,
+		"alcance": 0.64032959441344
+	},
+	"cruzado_tras": {
+		"len": 2.16666666666667,
+		"mao": "RightHand",
+		"impacto": 0.7,
+		"fim": 1.43333333333333,
+		"alcance": 0.660711537218756
+	},
+	"uppercut_frente": {
+		"len": 2.2,
+		"mao": "LeftHand",
+		"impacto": 0.8,
+		"fim": 1.78333333333333,
+		"alcance": 0.69243222888973
+	},
+	"uppercut_tras": {
+		"len": 2.2,
+		"mao": "RightHand",
+		"impacto": 0.7,
+		"fim": 1.38333333333333,
+		"alcance": 0.671302278836568
+	},
+	"jab_corpo": {
+		"len": 1.8,
+		"mao": "LeftHand",
+		"impacto": 0.5,
+		"fim": 1.0,
+		"alcance": 0.812093623810344
+	},
+	"direto_corpo": {
+		"len": 2.1,
+		"mao": "RightHand",
+		"impacto": 0.666666666666667,
+		"fim": 1.33333333333333,
+		"alcance": 0.706676859408617
+	},
+	"gancho_figado": {
+		"len": 2.93333333333333,
+		"mao": "LeftHand",
+		"impacto": 1.2,
+		"fim": 2.43333333333333,
+		"alcance": 1.11866152534882
+	},
+	"especial": {
+		"len": 1.33333333333333,
+		"mao": "LeftHand",
+		"impacto": 0.466666666666667,
+		"fim": 0.566666666666667,
+		"alcance": 0.517697694400946
+	},
+	"combo_12": {
+		"len": 2.1
+	},
+	"bloqueio_alto": {
+		"len": 1.76666666666667
+	},
+	"bloqueio_baixo": {
+		"len": 1.6
+	},
+	"esquiva_direita": {
+		"len": 1.43333333333333
+	},
+	"esquiva_tras": {
+		"len": 2.23333333333333
+	},
+	"esquiva_frente": {
+		"len": 2.33333333333333
+	},
+	"passo_frente": {
+		"len": 0.933333333333333
+	},
+	"passo_tras": {
+		"len": 0.8
+	},
+	"passo_esquerda": {
+		"len": 0.833333333333333
+	},
+	"passo_direita": {
+		"len": 0.833333333333333
+	},
+	"hit_cabeca": {
+		"len": 1.43333333333333
+	},
+	"hit_corpo": {
+		"len": 1.33333333333333
+	},
+	"hit_forte": {
+		"len": 2.43333333333333
+	},
+	"nocaute": {
+		"len": 4.93333333333333
+	},
+	"nocaute_figado": {
+		"len": 2.8
+	},
+	"vitoria": {
+		"len": 4.5
+	},
+	"derrota": {
+		"len": 4.76666666666667
+	},
+	"provocar": {
+		"len": 1.63333333333333
+	},
+	"danca_hiphop_1": {
+		"len": 18.5666666666667
+	},
+	"danca_hiphop_2": {
+		"len": 15.6666666666667
+	},
+	"danca_hiphop_3": {
+		"len": 3.36666666666667
+	},
+	"danca_house": {
+		"len": 26.1666666666667
+	},
+	"danca_swing": {
+		"len": 20.9
+	},
+	"danca_soul": {
+		"len": 8.83333333333333
+	},
+	"danca_maraschino": {
+		"len": 3.23333333333333
+	},
+	"esquiva_esquerda": {
+		"len": 1.43333333333333
+	}
+}

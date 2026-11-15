@@ -1,22 +1,61 @@
 # LogicBot
 
-Jogo educativo de luta de robôs: você programa o seu robô em Portugol e ele luta seguindo o seu código.
+Jogo educativo de luta de robôs: você **programa o seu robô em Portugol** e ele luta seguindo o seu código.
+Feito em **Godot 4.7.2** para ajudar alunos a aprender algoritmo.
 
-**Jogue grátis:** https://logic-bot.netlify.app/
+**Jogue grátis:** https://logic-bot.netlify.app/ · **Downloads (Windows, Linux, Mac, Android):** https://logicbot.itch.io/logicbot
 
-![Tela final com QR code](LogicBot_Final_QR.gif)
+![Tela final com QR code](midia/LogicBot_Final_QR.gif)
 
-## Arquivos
+## 🤝 O código é aberto: ajude a melhorar o jogo!
+
+Qualquer pessoa pode **estudar, alterar e adicionar coisas** no LogicBot: novas fases, robôs, golpes, cenários, traduções, correções...
+Veja o passo a passo em **[CONTRIBUINDO.md](CONTRIBUINDO.md)**.
+
+Achou um bug ou tem uma ideia? Abra uma [Issue](../../issues/new/choose).
+
+## Como abrir o projeto
+
+1. Baixe a **Godot 4.7.2** (versão padrão, não a .NET): https://godotengine.org/download
+2. Baixe este código: botão verde **Code → Download ZIP** (ou `git clone`).
+3. Abra a Godot, clique em **Importar** e escolha o arquivo `project.godot`.
+4. Aperte **F5** para jogar.
+
+Rodar os testes automáticos (330 testes):
+
+```
+godot --headless --path . -s res://tests/run_tests.gd
+```
+
+## Como o código está organizado
+
+| Pasta | O que tem |
+|---|---|
+| `scripts/programming/` | A linguagem Portugol: lexer, parser, verificador e a máquina virtual que roda o código do aluno |
+| `scripts/combat/` | Regras da luta (turnos, dano, fôlego) |
+| `scripts/ai/` | Campanha (as 10 fases) e os robôs inimigos |
+| `scripts/interface/` | Menus, editor de código, HUD, tela de resultado |
+| `scripts/arena/` | Ringue, cenários e efeitos |
+| `scripts/robots/` | Robô 3D e animações |
+| `scripts/progression/` | Moedas, loja da Garagem e progresso |
+| `tests/` | Testes automáticos |
+| `tools/` | Ferramentas (builds, pôsteres, documentação) |
+| `documentation/` | [Arquitetura](documentation/ARQUITETURA.md), [Linguagem](documentation/LINGUAGEM.md), [Guia de desenvolvimento](documentation/GUIA_DESENVOLVIMENTO.md), [Créditos](documentation/CREDITOS.md) |
+
+## Vídeo e imagens
 
 | Arquivo | O que é |
 |---|---|
-| [LogicBot_Como_Jogar.mp4](LogicBot_Como_Jogar.mp4) | Vídeo explicando como jogar (3min50, 1080p) |
-| [LogicBot_Final_QR.png](LogicBot_Final_QR.png) | Tela final com link e QR code (imagem) |
-| [LogicBot_Final_QR.gif](LogicBot_Final_QR.gif) | Tela final com link e QR code (animada) |
+| [midia/LogicBot_Como_Jogar.mp4](midia/LogicBot_Como_Jogar.mp4) | Vídeo explicando como jogar (3min50, 1080p) |
+| [midia/LogicBot_Final_QR.png](midia/LogicBot_Final_QR.png) | Tela final com link e QR code (imagem) |
+| [midia/LogicBot_Final_QR.gif](midia/LogicBot_Final_QR.gif) | Tela final com link e QR code (animada) |
 
-## Como baixar o vídeo
+## Licença
 
-1. Clique em **LogicBot_Como_Jogar.mp4** na lista de arquivos acima.
-2. Clique no botão de download (ícone de seta para baixo, à direita, ou "Download raw file").
+O LogicBot é liberado sob a licença **[CC BY-NC 4.0](LICENSE)**:
 
-Ou baixe tudo de uma vez: botão verde **Code** → **Download ZIP**.
+- ✅ Pode usar, estudar, alterar e compartilhar, inclusive versões modificadas.
+- ✅ Tem que dar o crédito ao autor original (Caik / LogicBot).
+- ❌ **Não pode usar para fins comerciais** (vender o jogo ou versões dele).
+
+Sons e animações de terceiros seguem as licenças deles — veja [CREDITOS.md](documentation/CREDITOS.md).
