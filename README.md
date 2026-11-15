@@ -5,8 +5,6 @@ Feito em **Godot 4.7.2** para ajudar alunos a aprender algoritmo.
 
 **Jogue grátis:** https://logic-bot.netlify.app/ · **Downloads (Windows, Linux, Mac, Android):** https://logicbot.itch.io/logicbot
 
-![Tela final com QR code](midia/LogicBot_Final_QR.gif)
-
 ## 🤝 O código é aberto: ajude a melhorar o jogo!
 
 Qualquer pessoa pode **estudar, alterar e adicionar coisas** no LogicBot: novas fases, robôs, golpes, cenários, traduções, correções...
@@ -41,14 +39,6 @@ godot --headless --path . -s res://tests/run_tests.gd
 | `tests/` | Testes automáticos |
 | `tools/` | Ferramentas (builds, pôsteres, documentação) |
 | `documentation/` | [Arquitetura](documentation/ARQUITETURA.md), [Linguagem](documentation/LINGUAGEM.md), [Guia de desenvolvimento](documentation/GUIA_DESENVOLVIMENTO.md), [Créditos](documentation/CREDITOS.md) |
-
-## Vídeo e imagens
-
-| Arquivo | O que é |
-|---|---|
-| [midia/LogicBot_Como_Jogar.mp4](midia/LogicBot_Como_Jogar.mp4) | Vídeo explicando como jogar (3min50, 1080p) |
-| [midia/LogicBot_Final_QR.png](midia/LogicBot_Final_QR.png) | Tela final com link e QR code (imagem) |
-| [midia/LogicBot_Final_QR.gif](midia/LogicBot_Final_QR.gif) | Tela final com link e QR code (animada) |
 
 ## Licença
 
