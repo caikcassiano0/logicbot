@@ -1,0 +1,52 @@
+; Arquivo de configuração do projeto Godot.
+; Pode ser editado pelo editor da Godot (Projeto > Configurações do Projeto).
+
+config_version=5
+
+[application]
+
+config/name="LogicBot"
+config/description="Jogo educacional de batalha de robôs: programe a lógica do seu robô em Portugol e assista à luta."
+config/version="2.1.2"
+run/main_scene="res://scenes/abertura/abertura.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+config/icon="res://icon.png"
+config/windows_native_icon="res://icon.ico"
+boot_splash/bg_color=Color(0.027, 0.043, 0.078, 1)
+boot_splash/show_image=false
+
+[autoload]
+
+GameSettings="*res://scripts/core/game_settings.gd"
+GameState="*res://scripts/core/game_state.gd"
+Progress="*res://scripts/core/progress.gd"
+Sfx="*res://scripts/core/audio.gd"
+Toque="*res://scripts/core/lb_touch_scroll.gd"
+
+[display]
+
+window/size/viewport_width=1600
+window/size/viewport_height=900
+window/size/window_width_override=1600
+window/size/window_height_override=900
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=6
+
+[gui]
+
+theme/default_font_multichannel_signed_distance_field=false
+
+[physics]
+
+common/physics_ticks_per_second=60
+
+[rendering]
+
+renderer/rendering_method.mobile="gl_compatibility"
+
+textures/vram_compression/import_etc2_astc=true
+
+environment/defaults/default_clear_color=Color(0.02, 0.03, 0.06, 1)
+anti_aliasing/quality/screen_space_aa=1
+textures/canvas_textures/default_texture_filter=1

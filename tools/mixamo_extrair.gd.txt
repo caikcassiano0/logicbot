@@ -1,0 +1,176 @@
+## FERRAMENTA (2.0): roda DENTRO de um projeto Godot separado que tenha os .fbx do Mixamo em
+## res://box/ e res://anim/ (não roda neste projeto). Gera assets/robo/robo.scn, animacoes.res e animacoes.json.
+##   godot --headless --path <projeto_mixamo> --script res://extract.gd
+extends SceneTree
+## Extrai do Mixamo: o robô (malha + esqueleto) e as animações, já tratadas, para o jogo.
+const OUT := "/home/claude/proj/LogicBot-transferencia/projeto/assets/robo/"
+# chave -> [arquivo, tipo]  tipo: golpe | loop | uma | passo
+const CLIPS := {
+	"guarda": ["box/Idle.fbx", "loop"], "guarda_parada": ["box/Boxing.fbx", "loop"],
+	"jab": ["box/Boxing_1.fbx", "golpe"], "direto": ["box/Boxing_2.fbx", "golpe"],
+	"cruzado_frente": ["box/Boxing_3.fbx", "golpe"], "cruzado_tras": ["box/Boxing_4.fbx", "golpe"],
+	"uppercut_frente": ["box/Boxing_5.fbx", "golpe"], "uppercut_tras": ["box/Boxing_6.fbx", "golpe"],
+	"jab_corpo": ["box/Lead_Jab.fbx", "golpe"], "direto_corpo": ["box/Body_Jab_Cross.fbx", "golpe"],
+	"gancho_figado": ["box/Hook.fbx", "golpe"], "especial": ["anim/Uppercut.fbx", "golpe"],
+	"combo_12": ["box/Boxing_7.fbx", "uma"],
+	"bloqueio_alto": ["box/Center_Block.fbx", "uma"], "bloqueio_baixo": ["box/Center_Block_1.fbx", "uma"],
+	"esquiva_direita": ["box/Dodging_Right.fbx", "uma"], "esquiva_tras": ["box/Dodging.fbx", "uma"],
+	"esquiva_frente": ["box/Dodging_1.fbx", "uma"],
+	"passo_frente": ["box/Medium_Step_Forward.fbx", "passo"], "passo_tras": ["box/Step_Backward.fbx", "passo"],
+	"passo_esquerda": ["box/Medium_Left_Side_Step.fbx", "passo"], "passo_direita": ["box/Medium_Right_Side_Step.fbx", "passo"],
+	"hit_cabeca": ["box/Head_Hit.fbx", "uma"], "hit_corpo": ["box/Hit_To_Body.fbx", "uma"],
+	"hit_forte": ["box/Receiving_A_Big_Uppercut.fbx", "uma"],
+	"nocaute": ["box/Knocked_Out.fbx", "uma"], "nocaute_figado": ["box/Livershot_Knockdown.fbx", "uma"],
+	"vitoria": ["box/Victory.fbx", "uma"], "derrota": ["box/Defeat.fbx", "uma"], "provocar": ["box/Taunt.fbx", "uma"],
+	"danca_hiphop_1": ["anim/Hip_Hop_Dancing.fbx", "loop"], "danca_hiphop_2": ["anim/Hip_Hop_Dancing_1.fbx", "loop"],
+	"danca_hiphop_3": ["anim/Hip_Hop_Dancing_2.fbx", "loop"], "danca_house": ["anim/House_Dancing.fbx", "loop"],
+	"danca_swing": ["anim/Swing_Dancing.fbx", "loop"], "danca_soul": ["anim/Northern_Soul_Spin_Combo.fbx", "loop"],
+	"danca_maraschino": ["anim/Dancing_Maraschino_Step.fbx", "loop"],
+}
+
+var meta := {}
+
+func _init():
+	_salvar_robo()
+	var lib := AnimationLibrary.new()
+	for k in CLIPS:
+		var a := _processar(k, CLIPS[k][0], CLIPS[k][1])
+		lib.add_animation(k, a)
+	lib.add_animation("esquiva_esquerda", _espelhar(lib.get_animation("esquiva_direita"), "box/Dodging_Right.fbx"))
+	meta["esquiva_esquerda"] = meta["esquiva_direita"].duplicate()
+	var err := ResourceSaver.save(lib, OUT + "animacoes.res", ResourceSaver.FLAG_COMPRESS)
+	print("animacoes.res ", err)
+	var f := FileAccess.open(OUT + "animacoes.json", FileAccess.WRITE)
+	f.store_string(JSON.stringify(meta, "\t", false))
+	print("META ", meta)
+	quit()
+
+func _salvar_robo():
+	var sc: Node3D = load("res://anim/Punching.fbx").instantiate()
+	root.add_child(sc)
+	for ap in sc.find_children("*", "AnimationPlayer", true, false):
+		sc.remove_child(ap); ap.free()
+	var mi: MeshInstance3D = sc.find_children("*", "MeshInstance3D", true, false)[0]
+	var mesh: Mesh = mi.mesh.duplicate(true)
+	var mat: StandardMaterial3D = mi.mesh.surface_get_material(0).duplicate(true)
+	mat.albedo_texture = ImageTexture.create_from_image(mat.albedo_texture.get_image())
+	mesh.surface_set_material(0, mat)
+	mi.mesh = mesh
+	mi.skin = mi.skin.duplicate(true)
+	sc.name = "Robo"
+	for n in sc.find_children("*", "", true, false):
+		n.owner = sc
+	var ps := PackedScene.new()
+	ps.pack(sc)
+	print("robo.scn ", ResourceSaver.save(ps, OUT + "robo.scn", ResourceSaver.FLAG_COMPRESS | ResourceSaver.FLAG_BUNDLE_RESOURCES))
+	sc.queue_free()
+
+func _carregar(arq: String) -> Array:
+	var sc: Node3D = load("res://" + arq).instantiate()
+	root.add_child(sc)
+	var ap: AnimationPlayer = sc.find_children("*", "AnimationPlayer", true, false)[0]
+	var sk: Skeleton3D = sc.find_children("*", "Skeleton3D", true, false)[0]
+	return [sc, ap, sk, ap.get_animation(ap.get_animation_list()[0])]
+
+func _processar(k: String, arq: String, tipo: String) -> Animation:
+	var r := _carregar(arq)
+	var sc: Node3D = r[0]; var ap: AnimationPlayer = r[1]; var sk: Skeleton3D = r[2]
+	var an: Animation = (r[3] as Animation).duplicate(true)
+	an.loop_mode = Animation.LOOP_LINEAR if tipo == "loop" else Animation.LOOP_NONE
+	# Hips: posição relativa ao primeiro quadro em X/Z (passos: X/Z zerados — quem anda é a simulação)
+	for t in an.get_track_count():
+		if an.track_get_type(t) == Animation.TYPE_POSITION_3D and String(an.track_get_path(t)).ends_with("mixamorig_Hips"):
+			var p0: Vector3 = an.track_get_key_value(t, 0)
+			for i in an.track_get_key_count(t):
+				var p: Vector3 = an.track_get_key_value(t, i)
+				var nx := 0.0 if tipo == "passo" or tipo == "loop" else p.x - p0.x
+				var nz := 0.0 if tipo == "passo" or tipo == "loop" else p.z - p0.z
+				an.track_set_key_value(t, i, Vector3(p0.x + nx if false else nx, p.y, nz))
+	var info := {"len": an.length}
+	if tipo == "golpe":
+		info.merge(_impacto(ap, sk, an))
+	meta[k] = info
+	sc.queue_free()
+	return an
+
+# Poses globais (espaço do esqueleto) calculadas direto das trilhas da animação.
+func _globais(sk: Skeleton3D, an: Animation, t: float) -> Array:
+	var rot := {}; var pos := {}
+	for i in an.get_track_count():
+		var b := sk.find_bone(String(an.track_get_path(i)).get_slice(":", 1))
+		if b < 0: continue
+		if an.track_get_type(i) == Animation.TYPE_ROTATION_3D: rot[b] = an.rotation_track_interpolate(i, t)
+		elif an.track_get_type(i) == Animation.TYPE_POSITION_3D: pos[b] = an.position_track_interpolate(i, t)
+	var G := []
+	for b in sk.get_bone_count():
+		var rest := sk.get_bone_rest(b)
+		var basis: Basis = Basis(rot[b]) * Basis.from_scale(rest.basis.get_scale()) if rot.has(b) else rest.basis
+		var loc := Transform3D(basis, pos.get(b, rest.origin))
+		var p := sk.get_bone_parent(b)
+		G.append(loc if p < 0 else (G[p] as Transform3D) * loc)
+	return G
+
+# Momento do impacto: quando a mão que soca fica mais longe do peito.
+func _impacto(ap: AnimationPlayer, sk: Skeleton3D, an: Animation) -> Dictionary:
+	var ch := sk.find_bone("mixamorig_Spine2")
+	var mao := {"LeftHand": [], "RightHand": []}
+	var n := int(an.length * 60.0)
+	for f in n + 1:
+		var G := _globais(sk, an, f / 60.0)
+		var c: Vector3 = G[ch].origin
+		for h in mao:
+			var ph: Vector3 = (G[sk.find_bone("mixamorig_" + h)] as Transform3D).origin
+			mao[h].append(ph.z - c.z * 0.0)
+	var melhor := ""; var ganho := -1.0
+	for h in mao:
+		var g: float = mao[h].max() - mao[h][0]
+		if g > ganho: ganho = g; melhor = h
+	var d: Array = mao[melhor]
+	var fi := d.find(d.max())
+	var limite: float = d[0] + (d[fi] - d[0]) * 0.2
+	var fe := n
+	for f in range(fi, n + 1):
+		if d[f] <= limite:
+			fe = f; break
+	var Gi := _globais(sk, an, fi / 60.0)
+	var hz: float = (Gi[sk.find_bone("mixamorig_" + melhor)] as Transform3D).origin.z
+	return {"mao": melhor, "impacto": fi / 60.0, "fim": fe / 60.0, "alcance": hz / 0.018}
+
+# Espelha uma animação (direita <-> esquerda), quadro a quadro, no espaço do esqueleto.
+func _espelhar(base: Animation, arq: String) -> Animation:
+	var r := _carregar(arq)
+	var sc: Node3D = r[0]; var ap: AnimationPlayer = r[1]; var sk: Skeleton3D = r[2]
+	var an: Animation = r[3]
+	var out := Animation.new()
+	out.length = base.length
+	var nb := sk.get_bone_count()
+	var rt := []
+	for b in nb:
+		var t := out.add_track(Animation.TYPE_ROTATION_3D)
+		out.track_set_path(t, NodePath("Skeleton3D:" + sk.get_bone_name(b)))
+		rt.append(t)
+	var hips := sk.find_bone("mixamorig_Hips")
+	var tp := out.add_track(Animation.TYPE_POSITION_3D)
+	out.track_set_path(tp, NodePath("Skeleton3D:mixamorig_Hips"))
+	var M := Basis(Vector3(-1, 0, 0), Vector3(0, 1, 0), Vector3(0, 0, 1))
+	var p0 := Vector3.ZERO
+	var f := 0.0
+	while f <= base.length + 0.0001:
+		var GG := _globais(sk, an, f)
+		var G := []
+		for b in nb:
+			var nome := sk.get_bone_name(b)
+			var par := nome.replace("Left", "@").replace("Right", "Left").replace("@", "Right")
+			var src := sk.find_bone(par)
+			var g: Transform3D = GG[src]
+			G.append(Transform3D(M * g.basis * M, M * g.origin))
+		for b in nb:
+			var p := sk.get_bone_parent(b)
+			var loc: Transform3D = (G[b] if p < 0 else (G[p] as Transform3D).affine_inverse() * G[b])
+			out.rotation_track_insert_key(rt[b], f, loc.basis.get_rotation_quaternion())
+			if b == hips:
+				if f == 0.0: p0 = loc.origin
+				out.position_track_insert_key(tp, f, Vector3(loc.origin.x - p0.x, loc.origin.y, loc.origin.z - p0.z))
+		f += 1.0 / 30.0
+	sc.queue_free()
+	return out

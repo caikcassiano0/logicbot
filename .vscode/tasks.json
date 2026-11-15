@@ -1,0 +1,42 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "LogicBot: rodar testes",
+			"type": "process",
+			"command": "${config:godotTools.editorPath.godot4}",
+			"args": ["--headless", "--path", "${workspaceFolder}", "--script", "res://tests/run_tests.gd"],
+			"group": { "kind": "test", "isDefault": true },
+			"problemMatcher": []
+		},
+		{
+			"label": "LogicBot: teste de fumaça da interface",
+			"type": "process",
+			"command": "${config:godotTools.editorPath.godot4}",
+			"args": ["--headless", "--path", "${workspaceFolder}", "--fixed-fps", "60", "res://tools/smoke_test.tscn"],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "LogicBot: rodar o jogo",
+			"type": "process",
+			"command": "${config:godotTools.editorPath.godot4}",
+			"args": ["--path", "${workspaceFolder}"],
+			"problemMatcher": []
+		},
+		{
+			"label": "LogicBot: abrir no editor da Godot",
+			"type": "process",
+			"command": "${config:godotTools.editorPath.godot4}",
+			"args": ["--editor", "--path", "${workspaceFolder}"],
+			"problemMatcher": []
+		},
+		{
+			"label": "LogicBot: importar recursos (primeira vez)",
+			"type": "process",
+			"command": "${config:godotTools.editorPath.godot4}",
+			"args": ["--headless", "--path", "${workspaceFolder}", "--import"],
+			"problemMatcher": []
+		}
+	]
+}
